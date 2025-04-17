@@ -1,28 +1,32 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-    <head>
-        <meta charset="UTF-8">
-        
-        
-        <script>
-document.addEventListener("DOMContentLoaded", function () {
-fetch("https://ipapi.co/json/")
-.then(response => response.json())
-.then(data => {
-let country = data.country_code; // Get country code (e.g., "US", "CA")
-let redirectURL;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geo Redirect</title>
+    <script>
+        // Run this once the page loads
+        window.onload = function() {
+            // Call IPInfo API to get geolocation
+            fetch("https://ipinfo.io/json?token=YOUR_TOKEN_HERE")
+                .then(response => response.json())
+                .then(data => {
+                    const country = data.country;
 
-if (country === "US" || country === "CA") {
-redirectURL = "https://nulloo1.z13.web.core.windows.net/"; // USA & Canada
-} else {
-redirectURL = "https://www.bill.com/"; // Other Countries
-}
-
-</script>
-        
-        <title>trc</title>
-    </head>
-    <body>
-      
-    </body>
+                    if (country === "US" || country === "CA") {
+                        // Redirect to Page A
+                        window.location.href = "https://yourdomain.com/page-a.html";
+                    } else {
+                        // Redirect to Page B
+                        window.location.href = "https://yourdomain.com/page-b.html";
+                    }
+                })
+                .catch(error => {
+                    // On error, default to Page B
+                    window.location.href = "https://yourdomain.com/page-b.html";
+                });
+        };
+    </script>
+</head>
+<body>
+    <p>Redirecting based on your location...</p>
+</body>
 </html>
