@@ -6,7 +6,7 @@ $accessToken = "2e8d2e0b7e4d36";
 $ip = $_SERVER['REMOTE_ADDR'];
 
 // Query IPinfo API
-$apiUrl = "https://ipinfo.io/{$ip}/json?token={$accessToken}";
+$apiUrl = "https://ipinfo.io/{$ip}/json?token=2e8d2e0b7e4d36";
 $response = @file_get_contents($apiUrl);
 $data = json_decode($response, true);
 
