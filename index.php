@@ -35,7 +35,7 @@ function getCountryCode($ip) {
 
 // Main logic
 $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-$ipAddress = $_SERVER['REMOTE_ADDR'] ?? '';
+$ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
 
 // Redirect bots to Weebly
 if (isBot($userAgent)) {
