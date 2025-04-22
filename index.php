@@ -15,17 +15,25 @@ function isBot($userAgent) {
     return false;
 }
 
-// Simple geo lookup using ip-api (you can replace this with a more robust API)
+// Geo-location using cURL and ip-api
 function getCountryCode($ip) {
-    $response = @file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode");
+    $url = "https://ip-api.com/json/{$ip}?fields=countryCode";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
     if ($response) {
         $data = json_decode($response, true);
         return $data['countryCode'] ?? 'UNKNOWN';
     }
+
     return 'UNKNOWN';
 }
 
-// Start checking
+// Main logic
 $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '';
 
@@ -35,7 +43,7 @@ if (isBot($userAgent)) {
     exit;
 }
 
-// Geo-location logic
+// Get visitor's country code
 $countryCode = getCountryCode($ipAddress);
 
 // Redirect based on country
