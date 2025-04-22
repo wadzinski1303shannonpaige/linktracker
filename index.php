@@ -1,27 +1,49 @@
 <?php
-// Your IPinfo Access Token
-$accessToken = "2e8d2e0b7e4d36";
+// Bot detection function
+function isBot($userAgent) {
+    $bots = [
+        'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider',
+        'yandexbot', 'sogou', 'exabot', 'facebot', 'ia_archiver',
+        'mj12bot', 'ahrefsbot', 'semrushbot', 'dotbot', 'gigabot'
+    ];
+    $userAgent = strtolower($userAgent);
+    foreach ($bots as $bot) {
+        if (strpos($userAgent, $bot) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
 
-// Get the visitor's IP address
-$ip = $_SERVER['REMOTE_ADDR'];
+// Simple geo lookup using ip-api (you can replace this with a more robust API)
+function getCountryCode($ip) {
+    $response = @file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode");
+    if ($response) {
+        $data = json_decode($response, true);
+        return $data['countryCode'] ?? 'UNKNOWN';
+    }
+    return 'UNKNOWN';
+}
 
-// Query IPinfo API
-$apiUrl = "https://ipinfo.io/{$ip}/json?token={$accessToken}";
-$response = @file_get_contents($apiUrl);
-$data = json_decode($response, true);
+// Start checking
+$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$ipAddress = $_SERVER['REMOTE_ADDR'] ?? '';
 
+// Redirect bots to Weebly
+if (isBot($userAgent)) {
+    header("Location: https://www.weebly.com");
+    exit;
+}
 
-// Get country code
-$countryCode = $data['country'] ?? '';
+// Geo-location logic
+$countryCode = getCountryCode($ipAddress);
 
 // Redirect based on country
 if ($countryCode === 'US' || $countryCode === 'CA') {
-    // Redirect USA/Canada visitors to Page A
-    header("Location: https://facebook.com");
+    header("Location: https://www.jameskelly.com");
+    exit;
 } else {
-    // Redirect others to Page B
-    header("Location: https://google.com/");
+    header("Location: https://www.weebly.com");
+    exit;
 }
-
-exit();
 ?>
